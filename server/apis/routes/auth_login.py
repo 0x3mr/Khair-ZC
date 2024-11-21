@@ -9,6 +9,9 @@ from functools import wraps
 import cryptography
 import jwt
 from authlib.integrations.flask_client import OAuth
+#from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+#from requests_oauthlib import OAuth2Session
+
 auth_bp = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
 
@@ -67,8 +70,7 @@ def register():
 def login():
     from app import google
 
-    redirect_uri = url_for('auth', _external=True)
-    return google.authorize_redirect(redirect_uri)
+   
     from models.dbSchema import db,User
     email = request.json.get('email')
     password = request.json.get('userPass')
