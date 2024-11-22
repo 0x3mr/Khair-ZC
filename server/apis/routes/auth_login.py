@@ -69,12 +69,7 @@ def register():
     
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    client_id = '1070205957080-201e5tsnmaohqueu1e4qhm85765uvgn1.apps.googleusercontent.com'
-    client_secret = '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'
-    authorization_base_url = 'https://accounts.google.com/o/oauth2/auth'
-    token_url = 'https://accounts.google.com/o/oauth2/token'
-    redirect_uri = 'http://127.0.0.1:5000/login/google/authorized'
-    scope = ['profile', 'email']
+
    
     from models.dbSchema import db,User
     email = request.json.get('email')
