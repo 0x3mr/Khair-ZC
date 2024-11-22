@@ -9,11 +9,12 @@ from functools import wraps
 import cryptography
 import jwt
 from authlib.integrations.flask_client import OAuth
-#from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
-#from requests_oauthlib import OAuth2Session
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from requests_oauthlib import OAuth2Session
 
 auth_bp = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
+login_manager = LoginManager()
 
 def token_required(f):
     from models.dbSchema import db,User
@@ -68,8 +69,12 @@ def register():
     
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    from app import google
-
+    client_id = '1070205957080-201e5tsnmaohqueu1e4qhm85765uvgn1.apps.googleusercontent.com'
+    client_secret = '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'
+    authorization_base_url = 'https://accounts.google.com/o/oauth2/auth'
+    token_url = 'https://accounts.google.com/o/oauth2/token'
+    redirect_uri = 'http://127.0.0.1:5000/login/google/authorized'
+    scope = ['profile', 'email']
    
     from models.dbSchema import db,User
     email = request.json.get('email')
@@ -88,22 +93,38 @@ def login():
         algorithm="HS256"   # The algorithm to use
         )
         return jsonify({"message": "Login successful!" , 'token': token}), 200
+    
     else:
         # Password is incorrect
         return jsonify({"error": "Invalid credentials!" ,'token': token}), 401
-
-@auth_bp.route('/auth')
-def auth():
-    # from app import google
     
-    # # Retrieve the user's profile info from Google after successful login
-    # token = google.authorize_access_token()
-    # user = google.parse_id_token(token)
-    # session['user'] = user['name']
-    pass
+@login_manager.user_loader
+def custom_user_loader(user_id):
+    """
+    Custom callback function to load the user.
+    :param user_id: The unique user identifier.
+    :return: The User object or None if not found.
+    """
+    from models.dbSchema import User
+    # Query the User table using the provided user_id
+    user = User.query.get(user_id)
+    # Return the user object if found, otherwise return None
+    return user if user else None
+    
+@auth_bp.route('/',methods=['POST'])
+def index():
+    if 'google_token' in session:
+        user_info = oauth.google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
+        user_info_email = user_info["email"]
+        return f'Logged in as {user_info_email}<br><a href="/logout">Logout</a>'
+    return 'You are not logged in<br><a href="/login">Login</a>'
+
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
-    session.pop('user', None)
-    return redirect('/')
+    session.pop('google_token', None)
+    return redirect(url_for('.index'))
+
+    
 
