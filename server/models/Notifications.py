@@ -182,7 +182,7 @@ class ErrorProcessor:
             "user_not_found":            lambda:  UserResponseHandler().handle("user_not_found"),
             "user_id_required":          lambda:  UserResponseHandler().handle("user_id_required"),
             "user_already_registered":   lambda:  UserResponseHandler().handle("user_already_registered"),
-            "user_not_registered":       lambda:  UserResponseHandler().handle("user_not_registered")
+            "user_not_registered":       lambda:  UserResponseHandler().handle("user_not_registered"),
             "campaign_follow":           lambda:  CampaignResponseHandler().handle("followed"),
             "campaign_unfollow":         lambda:  CampaignResponseHandler().handle("unfollowed"),
             "campaign_register":         lambda:  CampaignResponseHandler().handle("registered"),
