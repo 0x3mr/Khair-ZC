@@ -50,6 +50,8 @@ def create_app():
     app.register_blueprint(shop_bp,         url_prefix='/shop')
     app.register_blueprint(media_bp,        url_prefix='/media' )
     app.register_blueprint(oauth_bp,        url_prefix='/oauth' )
+    app.register_blueprint(security_bp,        url_prefix='/security' )
+
     
 
 
