@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import { FaUser, FaCog, FaShieldAlt, FaChartBar, FaSignOutAlt } from "react-icons/fa";
+import { IoAddCircleSharp } from "react-icons/io5";
 import { FiHome } from "react-icons/fi";
 import '../assets/stylesheets/Profile.css';
 import logo from '../assets/images/icon.png';
@@ -18,7 +19,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState('appearance');
   const [user, setUser] = useState<user>();
   const fetchUser = 'http://localhost:5000/security/user';
-  
+
   const navigate = useNavigate(); // Initialize useNavigate here
 
   const handleHomeButtonClick = () => {
@@ -29,6 +30,13 @@ const Profile = () => {
     navigate('/logout'); // Navigate to the logout page
   };
 
+  const handleAddCampaignClick = () => {
+    navigate('/addCampaign');
+  }
+
+  const handleAddCharityClick = () => {
+    navigate('/addCharity');
+  }
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -61,7 +69,6 @@ const Profile = () => {
                 <p>ID: {user?.id}</p>
                 <p>Name: {user?.firstName} {user?.lastName}</p>
                 <p>Email: {user?.email}</p>
-                <p>Description: { }</p>
               </div>
             </div>
           </div>
@@ -73,10 +80,19 @@ const Profile = () => {
             <h2>User Statistics</h2>
             <div className="statistics-grid">
               <div className="stat-item">
-                <p>Current Points: {user?.points}</p>
-                <p>Followed Charities: { }</p>
-                <p>Attended Campaigns: { }</p>
-                <p>Status: {user?.isAdmin ? "Admin" : "User"}</p>
+                {!user?.isAdmin ? (
+                  <>
+                    <p>Current Points: {user?.points}</p>
+                    <p>Followed Charities: </p>
+                    <p>Attended Campaigns: </p>
+                    <p>Status: User</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Status: Admin</p>
+                  </>
+                )}
+
               </div>
             </div>
           </div>
@@ -153,6 +169,18 @@ const Profile = () => {
               <span>Settings</span>
             </button>
           </nav>
+          {user?.isAdmin && (
+            <>
+              <button onClick={handleAddCampaignClick} className="home-button">
+                <IoAddCircleSharp className="icon" />
+                <span>Add Campaign</span>
+              </button>
+              <button onClick={handleAddCharityClick} className="home-button">
+                <IoAddCircleSharp className="icon" />
+                <span>Add Charity</span>
+              </button>
+            </>
+          )}
           <button onClick={handleLogOutButtonClick} className="logout-button">
             <FaSignOutAlt className="icon" />
             <span>Log Out</span>

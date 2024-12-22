@@ -11,7 +11,6 @@ from models.dbSchema import db
 # Import blueprints from respective modules
 from apis.routes.auth_login import auth_bp,oauth_bp
 from apis.routes.create_charity import charity_bp
-
 from apis.routes.points_system import points_bp
 from apis.routes.Campaign_Registeration import registration_bp
 from apis.routes.search import search_bp
@@ -42,8 +41,8 @@ def create_app():
     # blueprints
     app.register_blueprint(auth_bp,         url_prefix='/auth')
     app.register_blueprint(charity_bp,      url_prefix='/charity')
-    app.register_blueprint(campaign_bp,     url_prefix='/Campaign')
-    app.register_blueprint(points_bp,       url_prefix='/points')
+    app.register_blueprint(campaign_bp,     url_prefix='/campaign')
+    app.register_blueprint(points_bp, url_prefix='/points')
     app.register_blueprint(registration_bp, url_prefix='/registration')
     app.register_blueprint(search_bp,       url_prefix='/search')
     app.register_blueprint(join_bp,         url_prefix='/join')

@@ -10,30 +10,32 @@ import cryptography
 import jwt
 from authlib.integrations.flask_client import OAuth
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
-from requests_oauthlib import OAuth2Session
+# Removed duplicate import
 from models.dbSchema import db, Campaign, Charity
 from models.Notifications import ErrorProcessor
 from apis.routes.Security import session_required, admin_required
 
-campaign_bp = Blueprint('Campaign', __name__)
+campaign_bp = Blueprint('campaign', __name__)
+Notifications = ErrorProcessor()
+campaign_bp = Blueprint('campaign', __name__)
 Notifications = ErrorProcessor()
 
-
 @campaign_bp.route('/create', methods=['POST'])
-@session_required
-@admin_required
 def create():
-    from models.dbSchema import User, db, Campaign
+    from models.dbSchema import db, Campaign, Charity
 
-    campaigns = request.json  # Expecting a list of campaigns in the request body
+    campaigns = request.json
+    if not campaigns:
+        return jsonify({"error": "Invalid campaign data"}), 400
 
-    if not campaigns or not isinstance(campaigns, list):
-        return jsonify(Notifications.process_error("search_invalid")), 400
+    if isinstance(campaigns, dict):
+        campaigns = [campaigns]
+    elif not isinstance(campaigns, list):
+        return jsonify({"error": "Invalid campaign data"}), 400
 
     created_campaigns = []
 
     for campaign_data in campaigns:
-        # Extract campaign data
         user_id = campaign_data.get('userId')
         campaign_id = campaign_data.get('campaignId')
         campaign_name = campaign_data.get('campaignName')
@@ -43,25 +45,15 @@ def create():
         campaign_cap = campaign_data.get('campaignCap')
         connected_charity = campaign_data.get('charId')
 
-        # Validate required fields
         if not all([campaign_name, campaign_reward, campaign_desc, campaign_cap, connected_charity]):
-            return jsonify(Notifications.process_error("admin_campaign_create")), 400
+            return jsonify({"error": "Missing required campaign fields"}), 400
 
-        # Check if campaign already exists
-        existing_campaign = Campaign.query.filter_by(
-            title=campaign_name).first()
-        if existing_campaign:
-            return jsonify(Notifications.process_error("campaign_follow")), 400
+        if Campaign.query.filter_by(title=campaign_name).first() or Campaign.query.filter_by(id=campaign_id).first():
+            return jsonify({"error": "Campaign already exists"}), 400
 
-        existing_campaign = Campaign.query.filter_by(id=campaign_id).first()
-        if existing_campaign:
-            return jsonify(Notifications.process_error("campaign_follow")), 400
-
-        # Check if charity exists
         if not Charity.query.filter_by(id=connected_charity).first():
-            return jsonify(Notifications.process_error("charity_unregister")), 400
+            return jsonify({"error": "Charity does not exist"}), 400
 
-        # Create new campaign
         new_campaign = Campaign(
             id=campaign_id,
             title=campaign_name,
@@ -73,11 +65,10 @@ def create():
         )
 
         db.session.add(new_campaign)
-        created_campaigns.append(
-            {"campaignId": campaign_id, "campaignName": campaign_name})
+        created_campaigns.append({"campaignId": campaign_id, "campaignName": campaign_name})
 
     db.session.commit()
-    return jsonify(Notifications.process_error("admin_campaign_create")), 201
+    return jsonify({"message": "Campaigns created successfully", "campaigns": created_campaigns}), 201
 
 
 @campaign_bp.route('/campaigns', methods=['GET'])
@@ -117,11 +108,11 @@ def update():
     connected_charity = campaign.get('charId')
 
     if not campaign_id:
-        return jsonify(Notifications.process_error("campaign_unregister")), 400
+        return jsonify({"error": "Campaign ID is required"}), 400
 
     existing_campaign = Campaign.query.filter_by(id=campaign_id).first()
     if not existing_campaign:
-        return jsonify(Notifications.process_error("campaign_not_attended")), 404
+        return jsonify({"error": "Campaign not found"}), 404
 
     if campaign_name:
         existing_campaign.title = campaign_name
@@ -140,12 +131,11 @@ def update():
 
     if connected_charity:
         if not Charity.query.filter_by(id=connected_charity).first():
-            return jsonify(Notifications.process_error("charity_unregister")), 404
+            return jsonify({"error": "Charity does not exist"}), 404
         existing_campaign.charity_id = connected_charity
 
     db.session.commit()
-    return jsonify(Notifications.process_error("admin_campaign_update")), 200
-
+    return jsonify({"message": "Campaign updated successfully"}), 200
 
 @campaign_bp.route('/delete', methods=['DELETE'])
 @session_required
@@ -155,18 +145,14 @@ def delete():
 
     campaign_id = request.json.get('campaignId')
 
-    if not campaign_id or not isinstance(campaign_id, int):
-        return jsonify(Notifications.process_error("campaign_unregister")), 400
+    if not campaign_id:
+        return jsonify({"error": "Campaign ID is required"}), 400
 
     # if the campaign does not exist, return 404
-    if not Campaign.query.filter_by(id=campaign_id).first():
-        return jsonify(Notifications.process_error("campaign_not_attended")), 404
-
     existing_campaign = Campaign.query.filter_by(id=campaign_id).first()
-
     if not existing_campaign:
-        return jsonify(Notifications.process_error("campaign_not_attended")), 404
+        return jsonify({"error": "Campaign not found"}), 404
 
     db.session.delete(existing_campaign)
     db.session.commit()
-    return jsonify(Notifications.process_error("admin_campaign_delete")), 200
+    return jsonify({"message": "Campaign deleted successfully"}), 200

@@ -14,7 +14,8 @@ import CharityPage from './components/CharityPage';
 import Notification from './components/Notification';
 import Profile from './components/Profile';
 import Logout from './components/Logout';
-
+import AddCampaign from './components/AddCampaign';
+import AddCharity from './components/AddCharity';
 
 function App() {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -57,6 +58,8 @@ function AppContent({ isScrolled }: { isScrolled: boolean }) {
         <Route path='/notification' element={<Notification />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/logout' element={<Logout />} />
+        <Route path='/addCampaign' element={<AddCampaign/>}/>
+        <Route path='/addCharity' element={<AddCharity/>}/>
       </Routes>
     </>
   );

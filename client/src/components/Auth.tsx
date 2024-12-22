@@ -11,8 +11,10 @@ const Auth = () => {
   const [email, setEmail] = useState('');
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
+  const [id, setId] = useState('');
   const [userPass, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [points, setPoints] = useState(0); // Optional, for managing points dynamically
 
   const toggleAuth = () => { setIsSignUp(!isSignUp); };
 
@@ -27,7 +29,7 @@ const Auth = () => {
     try {
       const authType = isSignUp ? '/auth/register' : '/auth/login';
       const authParameters = isSignUp
-        ? { fname, lname, email, userPass}
+        ? { fname, lname, email, userPass,points,id}
         : { email, userPass };
 
       const response = await fetch(`http://localhost:5000${authType}`, {

@@ -31,7 +31,7 @@ class FollowedCharity(db.Model):
 
 
 class Charity(db.Model):
-    id = db.Column(db.Integer(), unique=True, primary_key=True, nullable=False)
+    id = db.Column(db.Integer(), unique=True, primary_key=True,autoincrement=True, nullable=False)
     name = db.Column(db.String(100), unique=True, nullable=False)
     address = db.Column(db.String(500), nullable=False)
     # Use Text for longer descriptions
@@ -47,7 +47,7 @@ class Campaign(db.Model):
     # Use Text for longer descriptions
     description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime(), nullable=False,
-default=datetime.datetime.utcnow)
+    default=datetime.datetime.utcnow)
     reward = db.Column(db.Integer(), default=0, nullable=False)
     # Specify which charity is responsible for this campaign
     charity_id = db.Column(db.Integer(), db.ForeignKey(
