@@ -1,0 +1,140 @@
+.create-charity-form {
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.create-charity-form h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bolder;
+  margin-bottom: 20px;
+  color: #333;
+  font-family: 'Trebuchet MS', sans-serif;
+  background-color: darkgray;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.create-charity-form .error {
+  color: #e74c3c;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.alert {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+
+.create-charity-form .success {
+  color: #2ecc71;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.create-charity-form .charity-form-fields {
+  display: grid;
+  gap: 18px;
+}
+
+.create-charity-form input,
+.create-charity-form textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-charity-form input[type="number"] {
+  -webkit-appearance: none; /* Chrome, Safari */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* Standard */
+}
+
+.create-charity-form input:focus,
+.create-charity-form textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.create-charity-form button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.create-charity-form button[type="button"] {
+  background-color: #f1f1f1;
+  color: #333;
+  margin-top: 20px;
+}
+
+.create-charity-form button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.create-charity-form button[type="button"]:hover {
+  background-color: #ddd;
+}
+
+.create-charity-form .charity-form-fields input {
+  padding: 14px;
+}
+
+.create-charity-form textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+@media (max-width: 768px) {
+  .create-charity-form {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .create-charity-form h2 {
+    font-size: 20px;
+  }
+
+  .create-charity-form input,
+  .create-charity-form textarea {
+    font-size: 14px;
+  }
+
+  .create-charity-form button {
+    font-size: 14px;
+  }
+}

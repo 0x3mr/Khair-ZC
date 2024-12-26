@@ -13,24 +13,27 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from requests_oauthlib import OAuth2Session
 from apis.routes.Security import session_required, admin_required
 from models.Notifications import ErrorProcessor
+
 points_bp = Blueprint('points', __name__)
 Notifications = ErrorProcessor()
-
-@points_bp.route('/change' , methods=['PUT'])
+@points_bp.route('/change', methods=['PUT'])
 @session_required
-@admin_required
 def change_points():
-    from models.dbSchema import db,User
+    from models.dbSchema import db, User
 
-    user_id  = request.json.get("user_id")
-    points_change_amount =int(request.json.get("amount"))
-    
-    user = User.query.filter_by(id = user_id).first()
+    user_id = request.json.get("user_id")
+    points_change_amount = int(request.json.get("points"))
+
+    user = User.query.filter_by(id=user_id).first()
 
     if user is None:
         return jsonify(Notifications.process_error("user_not_found")), 404
-    
-    user.points += points_change_amount
 
+    user.points += points_change_amount
     db.session.commit()
-    
+
+    return jsonify({
+        "message": "User points updated successfully.",
+        "user_id": user_id,
+        "new_points": user.points
+    }), 200

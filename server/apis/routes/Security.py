@@ -102,6 +102,7 @@ def get_user():
 
     # Admin users have a different response structure
     response_data = {
+        "id": user.id,
         "firstName": user.fname,
         "lastName": user.lname,
         "email": user.email
